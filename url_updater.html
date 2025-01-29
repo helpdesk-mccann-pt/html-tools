@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Updater</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        input { width: 80%; padding: 10px; margin: 10px; }
+        button { padding: 10px 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>URL Updater</h2>
+    <input type="text" id="oldUrl" placeholder="Enter old URL here">
+    <button onclick="updateUrl()">Update URL</button>
+    <p id="newUrl"></p>
+    <button id="copyButton" style="display: none;" onclick="copyUrl()">Copy URL</button>
+
+    <script>
+        function updateUrl() {
+            let oldUrl = document.getElementById("oldUrl").value;
+            let newUrl = oldUrl.replace("DROPBOX", "NEW"); // Change folder names here
+            document.getElementById("newUrl").innerText = newUrl;
+            document.getElementById("copyButton").style.display = "inline-block";
+        }
+        
+        function copyUrl() {
+            let text = document.getElementById("newUrl").innerText;
+            navigator.clipboard.writeText(text);
+            alert("URL copied to clipboard!");
+        }
+    </script>
+</body>
+</html>
