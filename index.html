@@ -31,10 +31,10 @@
             // Decode the URL-encoded path
             let decodedPath = decodeURIComponent(pathParam);
 
-            // Check if pathParam contains 'NUVEM_CRIATIVA/NEW'
-            if (decodedPath.includes("NUVEM_CRIATIVA/NEW")) {
-                // Replace 'NEW' with '2024'
-                decodedPath = decodedPath.replace("NUVEM_CRIATIVA/NEW", "NUVEM_CRIATIVA/2024");
+            // Check if pathParam contains 'NUVEM_CRIATIVA/NEW' or 'NUVEM_CRIATIVA/DROPBOX'
+            if (decodedPath.includes("NUVEM_CRIATIVA/NEW") || decodedPath.includes("NUVEM_CRIATIVA/DROPBOX")) {
+                // Replace 'NEW' or 'DROPBOX' with '2024'
+                decodedPath = decodedPath.replace(/NUVEM_CRIATIVA\/(NEW|DROPBOX)/, "NUVEM_CRIATIVA/2024");
 
                 // Re-encode the path and update the query parameter
                 queryParams.set("id", encodeURIComponent(decodedPath));
