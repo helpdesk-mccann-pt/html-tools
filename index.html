@@ -11,24 +11,53 @@
     </style>
 </head>
 <body>
-    <h2>URL Updater</h2>
+    <h2>NUVEM_CRIATIVA URL Updater</h2>
     <input type="text" id="oldUrl" placeholder="Enter old URL here">
     <button onclick="updateUrl()">Update URL</button>
     <p id="newUrl"></p>
     <button id="copyButton" style="display: none;" onclick="copyUrl()">Copy URL</button>
+    <button id="openButton" style="display: none;" onclick="openUrl()">Open URL</button>
 
     <script>
         function updateUrl() {
             let oldUrl = document.getElementById("oldUrl").value;
-            let newUrl = oldUrl.replace("DROPBOX", "NEW"); // Change folder names here
+            let newUrl = oldUrl;
+            
+            // Extract the query string from the URL
+            let urlObj = new URL(oldUrl);
+            let queryParams = new URLSearchParams(urlObj.search);
+            let pathParam = queryParams.get("id");
+
+            // Decode the URL-encoded path
+            let decodedPath = decodeURIComponent(pathParam);
+
+            // Check if pathParam contains 'NUVEM_CRIATIVA/NEW'
+            if (decodedPath.includes("NUVEM_CRIATIVA/NEW")) {
+                // Replace 'NEW' with '2024'
+                decodedPath = decodedPath.replace("NUVEM_CRIATIVA/NEW", "NUVEM_CRIATIVA/2024");
+
+                // Re-encode the path and update the query parameter
+                queryParams.set("id", encodeURIComponent(decodedPath));
+                
+                // Rebuild the full URL with updated query params
+                newUrl = urlObj.origin + urlObj.pathname + "?" + queryParams.toString();
+            }
+
+            // Update the displayed URL
             document.getElementById("newUrl").innerText = newUrl;
             document.getElementById("copyButton").style.display = "inline-block";
+            document.getElementById("openButton").style.display = "inline-block";
         }
-        
+
         function copyUrl() {
             let text = document.getElementById("newUrl").innerText;
             navigator.clipboard.writeText(text);
             alert("URL copied to clipboard!");
+        }
+
+        function openUrl() {
+            let url = document.getElementById("newUrl").innerText;
+            window.open(url, "_blank");
         }
     </script>
 </body>
