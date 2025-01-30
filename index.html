@@ -50,7 +50,29 @@
 
         function copyUrl() {
             let text = document.getElementById("newUrl").innerText;
-            navigator.clipboard.writeText(text);
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                // Modern clipboard API (Chrome, Edge, Firefox)
+                navigator.clipboard.writeText(text)
+                    .then(() => alert("URL copied to clipboard!"))
+                    .catch(err => {
+                        console.error("Clipboard copy failed", err);
+                        fallbackCopyText(text);
+                    });
+            } else {
+                // Fallback for older browsers
+                fallbackCopyText(text);
+            }
+        }
+
+        // Fallback method using a temporary text area
+        function fallbackCopyText(text) {
+            let textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
             alert("URL copied to clipboard!");
         }
 
