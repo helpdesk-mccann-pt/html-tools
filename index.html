@@ -22,27 +22,34 @@
         function updateUrl() {
             let oldUrl = document.getElementById("oldUrl").value;
             let newUrl = oldUrl;
-            
-            // Extract query string from the URL
-            let urlObj = new URL(oldUrl);
-            let queryParams = new URLSearchParams(urlObj.search);
-            let pathParam = queryParams.get("id");
 
-            if (pathParam) {
-                // Decode it only once
-                let decodedPath = decodeURIComponent(pathParam);
+            try {
+                let urlObj = new URL(oldUrl);
 
-                // Replace 'NEW' or 'DROPBOX' with '2024' in the correct location
-                let updatedPath = decodedPath.replace(/(NUVEM_CRIATIVA)\/(NEW|DROPBOX)/, "$1/2024");
+                // First, check and update the pathname
+                let updatedPathname = urlObj.pathname.replace(/(NUVEM_CRIATIVA)\/(NEW|DROPBOX)/, "$1/2024");
 
-                // Update the query parameter without double encoding
-                queryParams.set("id", updatedPath);
+                // Then, check if we need to update query parameters
+                let queryParams = new URLSearchParams(urlObj.search);
+                let pathParam = queryParams.get("id");
 
-                // Rebuild the full URL
-                newUrl = urlObj.origin + urlObj.pathname + "?" + queryParams.toString();
+                if (pathParam) {
+                    let decodedPath = decodeURIComponent(pathParam);
+                    let updatedPath = decodedPath.replace(/(NUVEM_CRIATIVA)\/(NEW|DROPBOX)/, "$1/2024");
+                    queryParams.set("id", updatedPath);
+                }
+
+                // Rebuild the full updated URL
+                newUrl = urlObj.origin + updatedPathname;
+                if (urlObj.search) {
+                    newUrl += "?" + queryParams.toString();
+                }
+
+            } catch (error) {
+                console.error("Invalid URL format:", error);
             }
 
-            // Update the displayed URL
+            // Display the updated URL
             document.getElementById("newUrl").innerText = newUrl;
             document.getElementById("copyButton").style.display = "inline-block";
             document.getElementById("openButton").style.display = "inline-block";
@@ -50,22 +57,15 @@
 
         function copyUrl() {
             let text = document.getElementById("newUrl").innerText;
-
             if (navigator.clipboard && navigator.clipboard.writeText) {
-                // Modern clipboard API (Chrome, Edge, Firefox)
                 navigator.clipboard.writeText(text)
                     .then(() => alert("URL copied to clipboard!"))
-                    .catch(err => {
-                        console.error("Clipboard copy failed", err);
-                        fallbackCopyText(text);
-                    });
+                    .catch(err => fallbackCopyText(text));
             } else {
-                // Fallback for older browsers
                 fallbackCopyText(text);
             }
         }
 
-        // Fallback method using a temporary text area
         function fallbackCopyText(text) {
             let textArea = document.createElement("textarea");
             textArea.value = text;
