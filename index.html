@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>URL Updater</title>
+    <title>NUVEM_CRIATIVA URL Updater</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
         input { width: 80%; padding: 10px; margin: 10px; }
@@ -23,23 +23,22 @@
             let oldUrl = document.getElementById("oldUrl").value;
             let newUrl = oldUrl;
             
-            // Extract the query string from the URL
+            // Extract query string from the URL
             let urlObj = new URL(oldUrl);
             let queryParams = new URLSearchParams(urlObj.search);
             let pathParam = queryParams.get("id");
 
-            // Decode the URL-encoded path
-            let decodedPath = decodeURIComponent(pathParam);
+            if (pathParam) {
+                // Decode it only once
+                let decodedPath = decodeURIComponent(pathParam);
 
-            // Check if pathParam contains 'NUVEM_CRIATIVA/NEW' or 'NUVEM_CRIATIVA/DROPBOX'
-            if (decodedPath.includes("NUVEM_CRIATIVA/NEW") || decodedPath.includes("NUVEM_CRIATIVA/DROPBOX")) {
-                // Replace 'NEW' or 'DROPBOX' with '2024'
-                decodedPath = decodedPath.replace(/NUVEM_CRIATIVA\/(NEW|DROPBOX)/, "NUVEM_CRIATIVA/2024");
+                // Replace 'NEW' or 'DROPBOX' with '2024' in the correct location
+                let updatedPath = decodedPath.replace(/(NUVEM_CRIATIVA)\/(NEW|DROPBOX)/, "$1/2024");
 
-                // Re-encode the path and update the query parameter
-                queryParams.set("id", encodeURIComponent(decodedPath));
-                
-                // Rebuild the full URL with updated query params
+                // Update the query parameter without double encoding
+                queryParams.set("id", updatedPath);
+
+                // Rebuild the full URL
                 newUrl = urlObj.origin + urlObj.pathname + "?" + queryParams.toString();
             }
 
